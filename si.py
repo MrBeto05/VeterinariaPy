@@ -46,10 +46,9 @@ class ClinicaVeterinaria:
         self.citas = []
         self.medicamentos = []
 
-    def registrar_mascota(self, nombre, especie, raza, edad, propietario):
-        mascota = Mascota(nombre, especie, raza, edad, propietario)
+    def registrar_mascota(self, mascota):
         self.mascotas.append(mascota)
-        print(f"Mascota '{nombre}' registrada correctamente.")
+        print(f"Mascota '{mascota.nombre}' registrada correctamente.")
 
     def actualizar_mascota(self, mascota, nombre=None, especie=None, raza=None, edad=None):
         if nombre:
@@ -102,46 +101,37 @@ class ClinicaVeterinaria:
         for medicamento in self.medicamentos:
             print(f"Medicamento: {medicamento.nombre}, Existencias: {medicamento.existencias}")
 
-
-
-# Importar las clases Propietario, Mascota, Cita, Medicamento, ClinicaVeterinaria
 GUI = Tk()
-# Función para crear la GUI
+
 def crear_gui(gui):
     gui.title("Sistema de Gestión de una Clínica Veterinaria")
     gui.resizable(True, True)
     gui.geometry("250x100")
 
-    # Crear un menú principal
     menu_principal = Menu(gui)
     gui.config(menu=menu_principal)
 
-    # Menú "Mascotas"
     menu_mascotas = Menu(menu_principal)
     menu_principal.add_cascade(label="Mascotas", menu=menu_mascotas)
     menu_mascotas.add_command(label="Registrar Mascota", command=abrir_registro_mascota)
     menu_mascotas.add_command(label="Actualizar Mascota", command=abrir_actualizar_mascota)
     menu_mascotas.add_command(label="Consultar Historial", command=abrir_historial_mascota)
 
-    # Menú "Citas"
     menu_citas = Menu(menu_principal)
     menu_principal.add_cascade(label="Citas", menu=menu_citas)
     menu_citas.add_command(label="Programar Cita", command=abrir_programar_cita)
     menu_citas.add_command(label="Registrar Consulta", command=abrir_registrar_consulta)
 
-    # Menú "Inventario"
     menu_inventario = Menu(menu_principal)
     menu_principal.add_cascade(label="Inventario", menu=menu_inventario)
     menu_inventario.add_command(label="Registrar Medicamento", command=abrir_registrar_medicamento)
     menu_inventario.add_command(label="Actualizar Inventario", command=abrir_actualizar_inventario)
 
-    # Menú "Reportes"
     menu_reportes = Menu(menu_principal)
     menu_principal.add_cascade(label="Reportes", menu=menu_reportes)
     menu_reportes.add_command(label="Reporte de Citas", command=generar_reporte_citas)
     menu_reportes.add_command(label="Reporte de Ventas", command=generar_reporte_ventas)
 
-    # Área de contenido principal
     area_contenido = Frame(GUI)
     area_contenido.pack(fill=BOTH, expand=True)
 
@@ -151,13 +141,10 @@ def crear_gui(gui):
 def quit_app():
     GUI.quit() 
     
-
-# Funciones para abrir ventanas de registro, actualización, etc.
 def abrir_registro_mascota():
     ventana_registro = Toplevel(GUI)
     ventana_registro.title("Registrar Mascota")
 
-    # Etiquetas y campos de entrada para los datos del propietario
     Label(ventana_registro, text="Nombre del propietario:").grid(row=0, column=0)
     entry_nombre_propietario = Entry(ventana_registro)
     entry_nombre_propietario.grid(row=0, column=1)
@@ -170,7 +157,6 @@ def abrir_registro_mascota():
     entry_telefono_propietario = Entry(ventana_registro)
     entry_telefono_propietario.grid(row=2, column=1)
 
-    # Etiquetas y campos de entrada para los datos de la mascota
     Label(ventana_registro, text="Nombre de la mascota:").grid(row=3, column=0)
     entry_nombre_mascota = Entry(ventana_registro)
     entry_nombre_mascota.grid(row=3, column=1)
@@ -187,9 +173,7 @@ def abrir_registro_mascota():
     entry_edad_mascota = Entry(ventana_registro)
     entry_edad_mascota.grid(row=6, column=1)
 
-    # Crear un botón para registrar la mascota
     def registrar_mascota():
-        # Obtener los datos ingresados en los campos de entrada
         nombre_propietario = entry_nombre_propietario.get()
         direccion_propietario = entry_direccion_propietario.get()
         telefono_propietario = entry_telefono_propietario.get()
@@ -198,16 +182,12 @@ def abrir_registro_mascota():
         raza_mascota = entry_raza_mascota.get()
         edad_mascota = int(entry_edad_mascota.get())
 
-        # Crear un objeto Propietario
         propietario = Propietario(nombre_propietario, direccion_propietario, telefono_propietario)
 
-        # Crear un objeto Mascota
         mascota = Mascota(nombre_mascota, especie_mascota, raza_mascota, edad_mascota, propietario)
 
-        # Registrar la mascota en la clínica
         clinica.registrar_mascota(mascota)
 
-        # Cerrar la ventana de registro
         ventana_registro.destroy()
 
     boton_registrar = Button(ventana_registro, text="Registrar", command=registrar_mascota)
@@ -217,12 +197,10 @@ def abrir_actualizar_mascota():
     ventana_actualizar = Toplevel(GUI)
     ventana_actualizar.title("Actualizar Mascota")
 
-    # Crear un campo de entrada para seleccionar la mascota
     Label(ventana_actualizar, text="Seleccionar mascota:").grid(row=0, column=0)
     combo_mascotas = ttk.Combobox(ventana_actualizar, values=[m.nombre for m in clinica.mascotas])
     combo_mascotas.grid(row=0, column=1)
 
-    # Etiquetas y campos de entrada para los datos de la mascota
     Label(ventana_actualizar, text="Nombre de la mascota:").grid(row=1, column=0)
     entry_nombre_mascota = Entry(ventana_actualizar)
     entry_nombre_mascota.grid(row=1, column=1)
@@ -240,20 +218,16 @@ def abrir_actualizar_mascota():
     entry_edad_mascota.grid(row=4, column=1)
 
     def actualizar_mascota():
-        # Obtener la mascota seleccionada
         nombre_mascota = combo_mascotas.get()
         mascota = next((m for m in clinica.mascotas if m.nombre == nombre_mascota), None)
 
-        # Obtener los nuevos datos ingresados
         nuevo_nombre = entry_nombre_mascota.get() or mascota.nombre
         nueva_especie = entry_especie_mascota.get() or mascota.especie
         nueva_raza = entry_raza_mascota.get() or mascota.raza
         nueva_edad = entry_edad_mascota.get() or mascota.edad
 
-        # Actualizar la información de la mascota
         clinica.actualizar_mascota(mascota, nuevo_nombre, nueva_especie, nueva_raza, nueva_edad)
 
-        # Cerrar la ventana de actualización
         ventana_actualizar.destroy()
 
     boton_actualizar = Button(ventana_actualizar, text="Actualizar", command=actualizar_mascota)
@@ -263,25 +237,20 @@ def abrir_historial_mascota():
     ventana_historial = Toplevel(GUI)
     ventana_historial.title("Historial Médico")
 
-    # Crear un campo de entrada para seleccionar la mascota
     Label(ventana_historial, text="Seleccionar mascota:").grid(row=0, column=0)
     combo_mascotas = ttk.Combobox(ventana_historial, values=[m.nombre for m in clinica.mascotas])
     combo_mascotas.grid(row=0, column=1)
 
-    # Crear un área de texto para mostrar el historial
     area_historial = Text(ventana_historial, width=60, height=20)
     area_historial.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 
     def mostrar_historial():
-        # Obtener la mascota seleccionada
         nombre_mascota = combo_mascotas.get()
         mascota = next((m for m in clinica.mascotas if m.nombre == nombre_mascota), None)
 
         if mascota:
-            # Limpiar el área de texto
             area_historial.delete('1.0', END)
 
-            # Mostrar el historial médico de la mascota
             area_historial.insert(END, f"Historial médico de '{mascota.nombre}':\n\n")
             for cita in mascota.historial_medico:
                 area_historial.insert(END, f"Fecha: {cita['fecha']}\n")
@@ -299,12 +268,10 @@ def abrir_programar_cita():
     ventana_cita = Toplevel(GUI)
     ventana_cita.title("Programar Cita")
 
-    # Seleccionar mascota
     Label(ventana_cita, text="Seleccionar mascota:").grid(row=0, column=0)
     combo_mascotas = ttk.Combobox(ventana_cita, values=[m.nombre for m in clinica.mascotas])
     combo_mascotas.grid(row=0, column=1)
 
-    # Ingresar fecha y hora
     Label(ventana_cita, text="Fecha de la cita:").grid(row=1, column=0)
     entry_fecha = Entry(ventana_cita)
     entry_fecha.grid(row=1, column=1)
@@ -332,12 +299,10 @@ def abrir_registrar_consulta():
     ventana_consulta = Toplevel(GUI)
     ventana_consulta.title("Registrar Consulta")
 
-    # Seleccionar mascota
     Label(ventana_consulta, text="Seleccionar mascota:").grid(row=0, column=0)
     combo_mascotas = ttk.Combobox(ventana_consulta, values=[m.nombre for m in clinica.mascotas])
     combo_mascotas.grid(row=0, column=1)
 
-    # Ingresar diagnóstico, tratamiento y medicamentos
     Label(ventana_consulta, text="Diagnóstico:").grid(row=1, column=0)
     entry_diagnostico = Entry(ventana_consulta)
     entry_diagnostico.grid(row=1, column=1)
@@ -370,7 +335,6 @@ def abrir_registrar_medicamento():
     ventana_medicamento = Toplevel(GUI)
     ventana_medicamento.title("Registrar Medicamento")
 
-    # Ingresar datos del medicamento
     Label(ventana_medicamento, text="Nombre del medicamento:").grid(row=0, column=0)
     entry_nombre = Entry(ventana_medicamento)
     entry_nombre.grid(row=0, column=1)
@@ -403,12 +367,10 @@ def abrir_actualizar_inventario():
     ventana_inventario = Toplevel(GUI)
     ventana_inventario.title("Actualizar Inventario")
 
-    # Seleccionar medicamento
     Label(ventana_inventario, text="Seleccionar medicamento:").grid(row=0, column=0)
     combo_medicamentos = ttk.Combobox(ventana_inventario, values=[m.nombre for m in clinica.medicamentos])
     combo_medicamentos.grid(row=0, column=1)
 
-    # Ingresar nuevas existencias y precio
     Label(ventana_inventario, text="Nuevas existencias:").grid(row=1, column=0)
     entry_existencias = Entry(ventana_inventario)
     entry_existencias.grid(row=1, column=1)
@@ -432,14 +394,29 @@ def abrir_actualizar_inventario():
 
     boton_actualizar = Button(ventana_inventario, text="Actualizar Inventario", command=actualizar_inventario)
     boton_actualizar.grid(row=3, columnspan=2, pady=10)
+
 def generar_reporte_citas():
-    clinica.generar_reporte_citas()
+    ventana_reporte = Toplevel(GUI)
+    ventana_reporte.title("Reporte de Citas")
+
+    area_reporte = Text(ventana_reporte, width=60, height=20)
+    area_reporte.pack(padx=10, pady=10)
+
+    area_reporte.insert(END, "Reporte de citas:\n\n")
+    for cita in clinica.citas:
+        area_reporte.insert(END, f"Mascota: {cita.mascota.nombre}, Fecha: {cita.fecha}, Hora: {cita.hora}\n")
 
 def generar_reporte_ventas():
-    clinica.generar_reporte_ventas()
+    ventana_reporte = Toplevel(GUI)
+    ventana_reporte.title("Reporte de Ventas")
 
-# Ejemplo de uso
+    area_reporte = Text(ventana_reporte, width=60, height=20)
+    area_reporte.pack(padx=10, pady=10)
+
+    area_reporte.insert(END, "Reporte de ventas de medicamentos:\n\n")
+    for medicamento in clinica.medicamentos:
+        area_reporte.insert(END, f"Medicamento: {medicamento.nombre}, Existencias: {medicamento.existencias}\n")
+
 clinica = ClinicaVeterinaria()
 
-# Crear la GUI
 crear_gui(GUI)

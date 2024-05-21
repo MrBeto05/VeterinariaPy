@@ -46,10 +46,9 @@ class ClinicaVeterinaria:
         self.citas = []
         self.medicamentos = []
 
-    def registrar_mascota(self, nombre, especie, raza, edad, propietario):
-        mascota = Mascota(nombre, especie, raza, edad, propietario)
+    def registrar_mascota(self, mascota):
         self.mascotas.append(mascota)
-        print(f"Mascota '{nombre}' registrada correctamente.")
+        print(f"Mascota '{mascota.nombre}' registrada correctamente.")
 
     def actualizar_mascota(self, mascota, nombre=None, especie=None, raza=None, edad=None):
         if nombre:
@@ -432,11 +431,28 @@ def abrir_actualizar_inventario():
 
     boton_actualizar = Button(ventana_inventario, text="Actualizar Inventario", command=actualizar_inventario)
     boton_actualizar.grid(row=3, columnspan=2, pady=10)
+    
 def generar_reporte_citas():
-    clinica.generar_reporte_citas()
+    ventana_reporte = Toplevel(GUI)
+    ventana_reporte.title("Reporte de Citas")
+
+    area_reporte = Text(ventana_reporte, width=60, height=20)
+    area_reporte.pack(padx=10, pady=10)
+
+    area_reporte.insert(END, "Reporte de citas:\n\n")
+    for cita in clinica.citas:
+        area_reporte.insert(END, f"Mascota: {cita.mascota.nombre}, Fecha: {cita.fecha}, Hora: {cita.hora}\n")
 
 def generar_reporte_ventas():
-    clinica.generar_reporte_ventas()
+    ventana_reporte = Toplevel(GUI)
+    ventana_reporte.title("Reporte de Ventas")
+
+    area_reporte = Text(ventana_reporte, width=60, height=20)
+    area_reporte.pack(padx=10, pady=10)
+
+    area_reporte.insert(END, "Reporte de ventas de medicamentos:\n\n")
+    for medicamento in clinica.medicamentos:
+        area_reporte.insert(END, f"Medicamento: {medicamento.nombre}, Existencias: {medicamento.existencias}\n")
 
 # Ejemplo de uso
 clinica = ClinicaVeterinaria()
